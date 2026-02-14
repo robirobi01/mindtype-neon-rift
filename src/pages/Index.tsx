@@ -1,14 +1,35 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { AnimatePresence } from "framer-motion";
+import { GameProvider, useGame } from "@/context/GameContext";
+import HeroScreen from "@/components/game/HeroScreen";
+import ModeSelect from "@/components/game/ModeSelect";
+import MemoryPhase from "@/components/game/MemoryPhase";
+import TypingPhase from "@/components/game/TypingPhase";
+import ResultScreen from "@/components/game/ResultScreen";
+import StarField from "@/components/game/StarField";
 
-const Index = () => {
+function GameRouter() {
+  const { phase } = useGame();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="relative min-h-screen bg-space scanline">
+      <StarField />
+      <div className="relative z-10">
+        <AnimatePresence mode="wait">
+          {phase === "hero" && <HeroScreen key="hero" />}
+          {phase === "mode-select" && <ModeSelect key="mode" />}
+          {phase === "memory" && <MemoryPhase key="memory" />}
+          {phase === "typing" && <TypingPhase key="typing" />}
+          {phase === "result" && <ResultScreen key="result" />}
+        </AnimatePresence>
       </div>
     </div>
   );
-};
+}
 
-export default Index;
+export default function Index() {
+  return (
+    <GameProvider>
+      <GameRouter />
+    </GameProvider>
+  );
+}
